@@ -4,21 +4,20 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type PatientRequest struct {
-	ID        int       `json:"user_id"`
-	Username  string    `json:"username"`
-	Password  string    `json:"password"`
-	Role      string    `json:"role"`
-	Name      string    `json:"name"`
-	Cnp       string    `json:"cnp"`
-	Phone     string    `json:"phone"`
-	Email     string    `json:"email"`
-	BirthDate time.Time `json:"birth_date"`
+	ID        int    `json:"user_id"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Role      string `json:"role"`
+	Name      string `json:"name"`
+	Cnp       string `json:"cnp"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	BirthDate string `json:"birth_date"`
 }
 
 type DoctorRequest struct {
@@ -30,6 +29,16 @@ type DoctorRequest struct {
 	Phone          string `json:"phone"`
 	Email          string `json:"email"`
 	Specialisation string `json:"specialisation"`
+}
+
+type AuthRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type AppointmentStautsRequest struct {
+	PatientID int    `json:"patient_id"`
+	Status    string `json:"status"`
 }
 
 // users
@@ -48,10 +57,15 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetUserByNameAndPasswordHandler(w http.ResponseWriter, r *http.Request) {
 
-	username := chi.URLParam(r, "username")
-	password := chi.URLParam(r, "password")
+	var req AuthRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
 
-	u, err := GetUserByNameAndPassword(db, username, password)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	u, err := GetUserByNameAndPassword(db, req.Username, req.Password)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -64,6 +78,7 @@ func GetUserByNameAndPasswordHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "user not found", http.StatusNotFound)
 		return
 	}
+	w.Header().Set("Content-type", "application/json")
 	json.NewEncoder(w).Encode(u)
 }
 
@@ -320,17 +335,17 @@ func GetDoctorAppointmentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateAppointmentStatusHandler(w http.ResponseWriter, r *http.Request) {
-	status := chi.URLParam(r, "status")
-	idStr := chi.URLParam(r, "patient_id")
 
-	id, err := strconv.Atoi(idStr)
+	var ap AppointmentStautsRequest
+
+	err := json.NewDecoder(r.Body).Decode(&ap)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = UpdateAppointmentStatus(db, status, uint32(id))
+	err = UpdateAppointmentStatus(db, ap.Status, uint32(ap.PatientID))
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

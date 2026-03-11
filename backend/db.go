@@ -159,6 +159,7 @@ func GetPatientById(db *sql.DB, id uint32) (*Patient, error) {
 
 	err := rows.Scan(
 		&p.ID,
+		&p.Name,
 		&p.Cnp,
 		&p.Phone,
 		&p.Email,
@@ -293,7 +294,7 @@ func CreateAppointment(db *sql.DB, ap *Appointment) error {
 
 func GetAppointmentsByPatientId(db *sql.DB, id uint32) ([]AppointmentVM, error) {
 	rows, err := db.Query(`SELECT a.appmnt_id, d.name AS doctor_name, p.name AS patient_name,
-                        a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour
+                        a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour, a.status
                         FROM appointments a
                         JOIN doctors d ON a.doctor_id = d.user_id
                         JOIN patients p ON a.patient_id = p.user_id
@@ -330,7 +331,7 @@ func GetAppointmentsByPatientId(db *sql.DB, id uint32) ([]AppointmentVM, error) 
 
 func GetAppointmentsByDocId(db *sql.DB, id uint32) ([]AppointmentVM, error) {
 	rows, err := db.Query(`SELECT a.appmnt_id, d.name AS doctor_name, p.name AS patient_name,
-                        a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour
+                        a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour, a.status
                         FROM appointments a
                         JOIN doctors d ON a.doctor_id = d.user_id
                         JOIN patients p ON a.patient_id = p.user_id
