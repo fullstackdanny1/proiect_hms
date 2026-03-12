@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin panel</title>
+    <script src ="api.js"></script>
+    <style>
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    color: #333;
+}
+header {
+    background-color: #27ae60; /* Green Nav */
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Sections in the middle */
+    gap: 30px; /* On the same line */
+}
+
+.nav-menu li a {
+    color: white; /* White text */
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.nav-menu li a:hover {
+    background-color: #1e8449;
+}
+
+/* --- Content Layout --- */
+main {
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#content {
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* --- Tables (Data-Table Class) --- */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 20px auto; /* Centered */
+    border: 2px solid #27ae60; /* Green border */
+    border-radius: 12px; /* Rounded corners */
+    overflow: hidden;
+    background: white;
+}
+
+.data-table thead {
+    background-color: #27ae60;
+    color: white;
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1fcf4;
+    cursor: pointer;
+}
+
+/* --- Flashcards --- */
+.user-flashcard {
+    background: white;
+    border: 2px solid #27ae60; /* Green border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 25px;
+    max-width: 500px;
+    margin: 20px auto; /* Centered */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.user-flashcard h2 {
+    margin-top: 0;
+    color: #27ae60;
+    border-bottom: 2px solid #f4f7f6;
+    padding-bottom: 10px;
+}
+
+.user-flashcard button {
+    margin-top: 15px;
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <ul class = "nav-menu" id = "nav"></ul>
+        </nav>
+    </header>
+    <main>
+        <div id = "content"></div>
+        
+    </main>  
+    <script src = "dashboard.js"></script>
+</body>
+</html>
