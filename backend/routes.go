@@ -11,6 +11,7 @@ import (
 func SetupRoutes() *chi.Mux {
 
 	r := chi.NewRouter()
+
 	r.Use(middleware.Logger)
 	r.Use(middleware.RedirectSlashes)
 	r.Use(middleware.CleanPath)
@@ -42,6 +43,9 @@ func SetupRoutes() *chi.Mux {
 	r.Get("/users", GetUsersHandler)
 	r.Post("/users/login", GetUserByNameAndPasswordHandler)
 	r.Get("/inventory", GetInventoryItemsHandler)
+
+	fs := http.FileServer(http.Dir("./frontend"))
+	r.Handle("/*", http.StripPrefix("/", fs))
 
 	return r
 }
