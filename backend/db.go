@@ -31,7 +31,7 @@ func InitDB() *sql.DB {
 // Users
 func CreateUser(db *sql.DB, u *User) (uint32, error) {
 	result, err := db.Exec(`INSERT INTO users 
-                           (username, password, role) VALUES(?, ?, ?)`,
+                        (username, password, role) VALUES(?, ?, ?)`,
 		u.Username, u.Password, u.Role)
 
 	if err != nil {
@@ -94,7 +94,7 @@ func GetUserByNameAndPassword(db *sql.DB, name string, password string) (*User, 
 		return nil, nil
 	}
 
-	if err != nil {
+    if err != nil {
 		return nil, err
 	}
 
@@ -285,8 +285,8 @@ func CreateSchedule() {} // to be implemented
 // Appointments
 func CreateAppointment(db *sql.DB, ap *Appointment) error {
 	_, err := db.Exec(`INSERT INTO appointments 
-	                   (patient_id, doctor_id, appnmt_date, appnmt_start_hour, appnmt_end_hour, status)
-					   VALUES(?, ?, ?, ?, ?, ?)`,
+	                (patient_id, doctor_id, appnmt_date, appnmt_start_hour, appnmt_end_hour, status)
+					VALUES(?, ?, ?, ?, ?, ?)`,
 		ap.PatientID, ap.DoctorID, ap.Date, ap.StartHour,
 		ap.EndHour, ap.Status)
 	return err
@@ -376,17 +376,17 @@ func UpdateAppointmentStatus(db *sql.DB, status string, patient_id uint32) error
 // Records
 func GetMedRecordsByPatientId(db *sql.DB, user_id uint32) ([]MedicalRecordVM, error) {
 	rows, err := db.Query(`SELECT 
-	                       mr.record_id, 
-						   p.name AS patient_name,
-                           d.name AS doctor_name,
-						   mr.diagnosis,
-						   mr.notes,
-						   mr.created_at
-						   FROM medical_records mr
-						   JOIN appointments a ON mr.appmnt_id = a.appmnt_id
-						   JOIN doctors d ON a.doctor_id = d.user_id
-						   JOIN patients p ON a.patient_id = p.user_id
-						   WHERE a.patient_id = ?`, user_id)
+	                    mr.record_id, 
+						p.name AS patient_name,
+                        d.name AS doctor_name,
+						mr.diagnosis,
+						mr.notes,
+						mr.created_at
+						FROM medical_records mr
+						JOIN appointments a ON mr.appmnt_id = a.appmnt_id
+						JOIN doctors d ON a.doctor_id = d.user_id
+						JOIN patients p ON a.patient_id = p.user_id
+						WHERE a.patient_id = ?`, user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -420,16 +420,16 @@ func GetMedRecordsByPatientId(db *sql.DB, user_id uint32) ([]MedicalRecordVM, er
 // Prescriptions
 func GetPrescriptionsRecordId(db *sql.DB, rec_id uint32) ([]PrescriptionVM, error) {
 	rows, err := db.Query(`SELECT
-                           p.prescription_id,
-						   d.name AS doctor_name,
-						   i.item_name AS medicament,
-						   p.instructions
-						   FROM prescriptions p
-						   JOIN medical_records mr ON p.record_id = mr.record_id
-						   JOIN appointments a ON mr.appmnt_id = a.appmnt_id
-						   JOIN doctors d ON a.doctor_id = d.user_id
-						   JOIN inventory i ON p.med_id = i.item_id
-						   WHERE p.record_id = ?`, rec_id)
+                        p.prescription_id,
+						d.name AS doctor_name,
+						i.item_name AS medicament,
+						p.instructions
+						FROM prescriptions p
+						JOIN medical_records mr ON p.record_id = mr.record_id
+						JOIN appointments a ON mr.appmnt_id = a.appmnt_id
+						JOIN doctors d ON a.doctor_id = d.user_id
+						JOIN inventory i ON p.med_id = i.item_id
+						WHERE p.record_id = ?`, rec_id)
 
 	if err != nil {
 		return nil, err
