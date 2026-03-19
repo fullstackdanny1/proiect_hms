@@ -8,22 +8,22 @@ if(!loggedUser){
 
 function setupNav() {
     if(loggedUser.role === "admin"){
-        nav.innerHTML = `<li><a href ='#' id ="nav-home">Home</a></li>
-            <li><a href ='#' id ="nav-users">Users</a></li>
-            <li><a href ='#' id ="nav-inventory">Inventory</a></li>
-            <li><a href ='#' id ="nav-logout">Logout</a></li>`
+        nav.innerHTML = `<li><a href ='#' id ="nav-home">Acasa</a></li>
+            <li><a href ='#' id ="nav-users">Utilizatori</a></li>
+            <li><a href ='#' id ="nav-inventory">Inventar</a></li>
+            <li><a href ='#' id ="nav-logout">Deconecteaza-te</a></li>`
     }
     else if(loggedUser.role === "doctor") {
-        nav.innerHTML = `<li><a href ='#' id ="nav-home">Home</a></li>
-            <li><a href ='#' id ="nav-schedule">Schedule</a></li>
-            <li><a href ='#' id ="nav-doc-appointments">Appointments</a></li>
-            <li><a href ='#' id ="nav-logout">Logout</a></li>`
+        nav.innerHTML = `<li><a href ='#' id ="nav-home">Acasa</a></li>
+            <li><a href ='#' id ="nav-schedule">Program doctor</a></li>
+            <li><a href ='#' id ="nav-doc-appointments">Programari pacienti</a></li>
+            <li><a href ='#' id ="nav-logout">Deconecteaza-te</a></li>`
     }
     else if(loggedUser.role === "patient") {
-        nav.innerHTML = `<li><a href ='#' id ="nav-home">Home</a></li>
-            <li><a href ='#' id ="nav-patient-appointments">Appointments</a></li>
-            <li><a href ='#' id ="nav-medical-history">Medical History</a></li>
-            <li><a href ='#' id ="nav-logout">Logout</a></li>`
+        nav.innerHTML = `<li><a href ='#' id ="nav-home">Acasa</a></li>
+            <li><a href ='#' id ="nav-patient-appointments">Programari</a></li>
+            <li><a href ='#' id ="nav-medical-history">Istoric medical</a></li>
+            <li><a href ='#' id ="nav-logout">Deconecteaza-te</a></li>`
     }
     attachEventListeners();
 }
@@ -49,15 +49,14 @@ function attachEventListeners() {
     });
 }
 
-// 3. Funcții de Redare (Render)
 function renderHome() {
     content.innerHTML = "";
     const div = document.createElement("div");
     div.className = "user-flashcard";
 
-    div.innerHTML = `<h2>Welcome, ${loggedUser.username}</h2>
-                     <p>User ID: ${loggedUser.user_id}</p>
-                     <p>Role: ${loggedUser.role}</p>`;
+    div.innerHTML = `<h2>Bine ai venit, ${loggedUser.username}</h2>
+                     <p>ID utilizator: ${loggedUser.user_id}</p>
+                     <p>Rol: ${loggedUser.role}</p>`;
     content.appendChild(div);
 
     if(loggedUser.role !== "admin") {
@@ -94,13 +93,13 @@ async function renderUsers() {
                 content.innerHTML = "";
                 const card = document.createElement("div");
                 card.className = "user-flashcard";
-                card.innerHTML = `<h2>User Details</h2><p>User ID: ${userId}</p><p>Role: ${role}</p>`;
+                card.innerHTML = `<h2>User Detalii</h2><p>ID utilizator: ${userId}</p><p>Rol: ${role}</p>`;
                 content.appendChild(card);
 
                 await getUserFullInfo(userId, role, card);
 
                 const backBtn = document.createElement("button");
-                backBtn.innerText = "Go back";
+                backBtn.innerText = "Inapoi";
                 backBtn.onclick = renderUsers;
                 card.appendChild(backBtn);
             });
@@ -116,19 +115,19 @@ async function getUserFullInfo(userId, role, container) {
         if(role === "patient") {
             const patient = await getPatient(userId);
             detailsHtml = `
-                <p>Name: ${patient.name}</p>
+                <p>Nume: ${patient.name}</p>
                 <p>CNP: ${patient.cnp}</p>
-                <p>Phone: ${patient.phone}</p>
+                <p>Telefon: ${patient.phone}</p>
                 <p>Email: ${patient.email}</p>
-                <p>Birth Date: ${patient.birth_date}</p>`;
+                <p>Data nasterii: ${formatDateString(patient.birth_date)}</p>`;
         }
         else if(role === "doctor") {
             const doctor = await getDoctor(userId);
             detailsHtml = `
-                <p>Name: ${doctor.name}</p>
-                <p>Phone: ${doctor.phone}</p>
+                <p>Nume: ${doctor.name}</p>
+                <p>Telefon: ${doctor.phone}</p>
                 <p>Email: ${doctor.email}</p>
-                <p>Specialisation: ${doctor.specialisation}</p>`;
+                <p>Specializare: ${doctor.specialisation}</p>`;
         }
         const infoDiv = document.createElement("div");
         infoDiv.innerHTML = detailsHtml;
@@ -153,10 +152,9 @@ async function renderPatientAppointments() {
             <tbody>`;
         
         appointments.forEach(ap => {
-            // Folosim proprietățile din AppointmentVM: doc_name, date, start_hour, end_hour, status
             html += `<tr>
                 <td>${ap.doc_name}</td>
-                <td>${ap.date}</td>
+                <td>${formatDateString(ap.date)}</td>
                 <td>${ap.start_hour} - ${ap.end_hour}</td>
                 <td>${ap.status}</td>
             </tr>`;
@@ -183,10 +181,9 @@ async function renderDocAppointments() {
             <tbody>`;
         
         appointments.forEach(ap => {
-            // Folosim p_name pentru numele pacientului conform AppointmentVM
             html += `<tr>
                 <td>${ap.p_name}</td>
-                <td>${ap.date}</td>
+                <td>${formatDateString(ap.date)}</td>
                 <td>${ap.start_hour} - ${ap.end_hour}</td>
                 <td>${ap.status}</td>
             </tr>`;
@@ -214,12 +211,11 @@ async function renderMedicalHistory() {
             <tbody>`;
         
         history.forEach(mh => {
-            // Folosim diagnosis, doctor, notes, created_at conform MedicalRecordVM
             html += `<tr>
                 <td>${mh.diagnosis}</td>
                 <td>${mh.doctor}</td>
                 <td>${mh.notes}</td>
-                <td>${mh.created_at}</td>
+                <td>${formatDateString(mh.created_at)}</td>
                 <td><button onclick="viewPrescriptionFromRecord(${mh.id})">Vezi Rețetă</button></td>
             </tr>`;
         });
@@ -228,8 +224,6 @@ async function renderMedicalHistory() {
         content.innerHTML = "<p>Nu există istoric medical disponibil.</p>";
     }
 }
-
-// Funcție helper pentru a vedea rețeta unei înregistrări specifice
 window.viewPrescriptionFromRecord = async function(recordId) {
     content.innerHTML = `<p>Se încarcă rețeta...</p>`;
     try {
@@ -245,7 +239,6 @@ window.viewPrescriptionFromRecord = async function(recordId) {
             <tbody>`;
         
         prescriptions.forEach(p => {
-            // Folosim medicament, instructiuni, doctor conform PrescriptionVM
             html += `<tr>
                 <td>${p.medicament}</td>
                 <td>${p.instructiuni}</td>
@@ -253,8 +246,8 @@ window.viewPrescriptionFromRecord = async function(recordId) {
             </tr>`;
         });
         content.innerHTML = html + `</tbody></table><button onclick="renderMedicalHistory()">Înapoi la Istoric</button>`;
-    } catch (err) {
-        //content.innerHTML = "<p>Nu a fost găsită nicio rețetă pentru această înregistrare.</p><button onclick="renderMedicalHistory()">Înapoi</button>";
+    } catch (err) {  
+        content.innerHTML = "<p>You have no prescriptions</p>"; 
     }
 }
 
@@ -264,7 +257,7 @@ async function renderInventory() {
         const items = await getInventory();
         let html = `<table class="data-table">
             <thead>
-                <tr><th>Item ID</th><th>Item name</th><th>Item type</th><th>Stock</th></tr>
+                <tr><th>Item ID</th><th>Nume item</th><th>Tip item</th><th>Stock</th></tr>
             </thead>
             <tbody>`;
         items.forEach(i => {
@@ -277,7 +270,52 @@ async function renderInventory() {
 }
 
 async function renderSchedules() {
-    content.innerHTML = "<p>Schedule management is under construction.</p>";
+    content.innerHTML = "Rendering doctor schedule..."
+
+    try {
+        let html = `<h3>Program doctor</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ziua</th>
+                                <th>Incepe la</th>
+                                <th>Termina la</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+        const schedules = await getDoctorScedules(loggedUser.user_id);
+
+        schedules.forEach(s => {
+            html += `
+                <tr>
+                    <td>${weekday(s.day_of_week)}</td>
+                    <td>${s.start_hour}</td>
+                    <td>${s.end_hour}</td>
+                </tr>`;
+        });
+
+        html += `</tbody></table>`;
+        content.innerHTML = html;
+    }
+    catch (err) {
+        content.innerHTML = "Failed to load doctor schedules...";
+        console.error(err);
+    }
+}
+
+function weekday(day) {
+    const days = [
+        "Luni",
+        "Marți",
+        "Miercuri",
+        "Joi",
+        "Vineri",
+        "Sâmbătă",
+        "Duminică"
+    ];
+
+    return days[day - 1] || "Necunoscut";
 }
 
 function logout() {
@@ -285,6 +323,9 @@ function logout() {
     window.location = "login.html";
 }
 
+function formatDateString(dateString){
+    return new Date(dateString).toLocaleDateString('ro-RO')
+}
 // 4. Inițializare sistem
 setupNav();
 renderHome();
