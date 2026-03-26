@@ -94,12 +94,11 @@ func GetUserByNameAndPassword(db *sql.DB, name string, password string) (*User, 
 		return nil, nil
 	}
 
-    if err != nil {
+	if err != nil {
 		return nil, err
 	}
 
 	return &user, nil
-
 }
 
 func DeleteUser() {} // To be implemented
@@ -293,11 +292,12 @@ func CreateAppointment(db *sql.DB, ap *Appointment) error {
 }
 
 func GetAppointmentsByPatientId(db *sql.DB, id uint32) ([]AppointmentVM, error) {
-	rows, err := db.Query(`SELECT a.appmnt_id, d.name AS doctor_name, p.name AS patient_name,
-                        a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour, a.status
-                        FROM appointments a
-                        JOIN doctors d ON a.doctor_id = d.user_id
-                        JOIN patients p ON a.patient_id = p.user_id
+	rows, err := db.Query(`SELECT a.appmnt_id, a.doctor_id, a.patient_id, 
+                          d.name AS doctor_name, p.name AS patient_name,
+                          a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour, a.status
+                          FROM appointments a
+                          JOIN doctors d ON a.doctor_id = d.user_id
+                          JOIN patients p ON a.patient_id = p.user_id
                         WHERE a.patient_id = ?`, id)
 
 	if err != nil {
@@ -311,6 +311,8 @@ func GetAppointmentsByPatientId(db *sql.DB, id uint32) ([]AppointmentVM, error) 
 
 		err := rows.Scan(
 			&vm.ID,
+			&vm.DoctorID,
+			&vm.PatientID,
 			&vm.DoctorName,
 			&vm.PatientName,
 			&vm.Date,
@@ -330,7 +332,8 @@ func GetAppointmentsByPatientId(db *sql.DB, id uint32) ([]AppointmentVM, error) 
 }
 
 func GetAppointmentsByDocId(db *sql.DB, id uint32) ([]AppointmentVM, error) {
-	rows, err := db.Query(`SELECT a.appmnt_id, d.name AS doctor_name, p.name AS patient_name,
+	rows, err := db.Query(`SELECT a.appmnt_id, a.doctor_id, a.patient_id,
+	                    d.name AS doctor_name, p.name AS patient_name,
                         a.appmnt_date, a.appmnt_start_hour, a.appmnt_end_hour, a.status
                         FROM appointments a
                         JOIN doctors d ON a.doctor_id = d.user_id
@@ -348,6 +351,8 @@ func GetAppointmentsByDocId(db *sql.DB, id uint32) ([]AppointmentVM, error) {
 
 		err := rows.Scan(
 			&vm.ID,
+			&vm.DoctorID,
+			&vm.PatientID,
 			&vm.DoctorName,
 			&vm.PatientName,
 			&vm.Date,
