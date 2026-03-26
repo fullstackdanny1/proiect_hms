@@ -2,6 +2,8 @@ package main
 
 type AppointmentVM struct {
 	ID          int    `json:"id"`
+	DoctorID    int    `json:"doctor_id"`
+	PatientID   int    `json:"patient_id"`
 	DoctorName  string `json:"doc_name"`
 	PatientName string `json:"p_name"`
 	Date        string `json:"date"`

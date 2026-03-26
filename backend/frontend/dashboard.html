@@ -6,62 +6,55 @@
     <title>Admin panel</title>
     <script src ="api.js"></script>
     <style>
-        body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+       /* --- Global Reset & Container --- */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: #f4f7f6;
     margin: 0;
+    padding: 20px;
     color: #333;
 }
-header {
-    background-color: #27ae60; /* Green Nav */
-    padding: 10px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
-.nav-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+/* --- Layout Principal (Flexbox) --- */
+.patient-dashboard {
     display: flex;
-    justify-content: center; /* Sections in the middle */
-    gap: 30px; /* On the same line */
-}
-
-.nav-menu li a {
-    color: white; /* White text */
-    text-decoration: none;
-    font-weight: 600;
-    padding: 8px 15px;
-    border-radius: 4px;
-    transition: background 0.3s;
-}
-
-.nav-menu li a:hover {
-    background-color: #1e8449;
-}
-
-/* --- Content Layout --- */
-main {
-    padding: 40px 20px;
-    display: flex;
-    justify-content: center;
-}
-
-#content {
+    gap: 30px;
+    align-items: flex-start; /* Aliniază elementele la partea de sus */
     width: 100%;
-    max-width: 1000px;
+    max-width: 1600px; /* Lățime extinsă pentru tabele mari */
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
-/* --- Tables (Data-Table Class) --- */
+.patient-sidebar {
+    flex: 0 0 350px; /* Lățime fixă pentru sidebar */
+    position: sticky;
+    top: 20px; /* Flashcard-ul rămâne vizibil la scroll */
+}
+
+.patient-main {
+    flex: 1; /* Ocupă restul spațiului (aprox 2/3) */
+    min-width: 0; /* Previne overflow-ul tabelului care ar împinge sidebar-ul */
+}
+
+/* Titluri Secțiuni */
+.patient-main h3, h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-left: 5px solid #27ae60;
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+
+/* --- Tabele de Date (.data-table) --- */
 .data-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin: 20px auto; /* Centered */
-    border: 2px solid #27ae60; /* Green border */
-    border-radius: 12px; /* Rounded corners */
-    overflow: hidden;
+    border-collapse: collapse;
     background: white;
+    border-radius: 12px;
+    overflow: hidden; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin: 0; /* Eliminat centrarea forțată */
 }
 
 .data-table thead {
@@ -69,8 +62,9 @@ main {
     color: white;
 }
 
-.data-table th, .data-table td {
-    padding: 12px 15px;
+.data-table th, 
+.data-table td {
+    padding: 15px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
@@ -80,33 +74,127 @@ main {
     cursor: pointer;
 }
 
-/* --- Flashcards --- */
+/* --- Card Utilizator (.user-flashcard) --- */
 .user-flashcard {
     background: white;
-    border: 2px solid #27ae60; /* Green border */
-    border-radius: 12px; /* Rounded corners */
+    border: 2px solid #27ae60;
+    border-radius: 12px;
     padding: 25px;
-    max-width: 500px;
-    margin: 20px auto; /* Centered */
+    width: 100%; 
+    box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin: 0; /* Eliminat centrarea forțată */
 }
 
 .user-flashcard h2 {
     margin-top: 0;
+    font-size: 1.5rem;
     color: #27ae60;
     border-bottom: 2px solid #f4f7f6;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
 
-.user-flashcard button {
-    margin-top: 15px;
-    background: #95a5a6;
+.user-flashcard p {
+    margin: 10px 0;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* --- Butoane --- */
+button, .btn-secondary {
+    background: #27ae60;
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
+    padding: 12px 20px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
 }
+
+button:hover, .btn-secondary:hover {
+    background: #219150;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Butonul "Inapoi" (Gri) */
+.btn-secondary, 
+button[textContent="Inapoi"],
+button[textContent*="Înapoi"] {
+    background: #95a5a6;
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+
+/* Buton Rețetă în Tabel */
+.view-presc-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    background: #2ecc71;
+}
+
+/* --- Navbar Verde --- */
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    background: #27ae60; /* Verde principal */
+    padding: 10px 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.nav-menu li {
+    display: inline;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.nav-menu a:hover {
+    background: rgba(255, 255, 255, 0.2); /* Efect de highlight la hover */
+    color: #f1fcf4;
+}
+
+#nav-logout {
+    background: #e67e22; /* Portocaliu pentru logout ca să iasă în evidență */
+    margin-left: auto; /* Împinge logout-ul în dreapta de tot */
+}
+
+#nav-logout:hover {
+    background: #d35400;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1000px) {
+    .patient-dashboard {
+        flex-direction: column;
+    }
+    
+    .patient-sidebar {
+        flex: none;
+        width: 100%;
+        position: static;
+        margin-bottom: 20px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -120,6 +208,7 @@ main {
         <div id = "content"></div>
         
     </main>  
+
     <script src = "dashboard.js"></script>
 </body>
 </html>

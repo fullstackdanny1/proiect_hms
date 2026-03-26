@@ -101,7 +101,7 @@ async function createDoctor(user, doctor) {
     return res.json()
 }
 
-async function getDoctorScedules(ID) {
+async function getDoctorSchedules(ID) {
     const res = await fetch(`${API}/doctors/schedules/${ID}`)
 
     return res.json()
